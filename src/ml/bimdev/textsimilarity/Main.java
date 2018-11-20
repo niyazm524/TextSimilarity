@@ -14,12 +14,14 @@ public class Main {
         System.out.print("It's a text similarity program. Enter how many texts you have: ");
         int count = sc.nextInt();
         TextProvider[] providers = new TextProvider[count];
-        HashMap<Integer, Double> results = new HashMap<>();
+        Result[] results = new Result[count];
         for (int i = 0; i < count; i++) {
-            System.out.println("It's a text or a file? [T/f]  ");
+            System.out.print("It's a text or a file? [T/f]  ");
+            String line;
             if(!sc.next().equals("f")) {
                 System.out.println("Enter your text line\n");
-                providers[i] = new SimpleTextProvider(sc.nextLine());
+                do { line = sc.nextLine(); } while (line.isEmpty());
+                providers[i] = new SimpleTextProvider(line);
             } else {
                 System.out.print("Enter filename: ");
                 providers[i] = new FileTextProvider(new File(sc.nextLine()));
@@ -33,19 +35,25 @@ public class Main {
             analyzer = new CosineTextAnalyzer();
 
         TextProvider query;
-        System.out.println("Now enter your search query. Is it just text or file? [T/f]  ");
+        System.out.print("Now enter your search query. Is it just text or file? [T/f]  ");
+        String line;
         if(!sc.next().equals("f")) {
             System.out.println("Enter your text line\n");
-            query = new SimpleTextProvider(sc.nextLine());
+            do { line = sc.nextLine(); } while (line.isEmpty());
+            query = new SimpleTextProvider(line);
         } else {
             System.out.print("Enter filename: ");
             query = new FileTextProvider(new File(sc.nextLine()));
         }
 
         for (int i = 0; i < providers.length; i++) {
-            results.put(i, analyzer.analyze(query, providers[i]));
+            results[i] = new Result(i, providers[i], analyzer.analyze(query, providers[i]));
         }
+        Arrays.sort(results);
 
-        // todo: sort results by value and sout
+        int i = 0;
+        for(Result result : results) {
+            System.out.printf("%s) %s", result.id, result.toString());
+        }
     }
 }
