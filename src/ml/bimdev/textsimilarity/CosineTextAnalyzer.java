@@ -16,22 +16,16 @@ public class CosineTextAnalyzer implements TextAnalyzer {
         int[] vector1 = vectorize(uniques, tokens1);
         int[] vector2 = vectorize(uniques, tokens2);
 
-        double numerator = 0;
-        for (int i = 0; i < vector1.length; i++) {
-            numerator += vector1[i] * vector2[i];
+        return calculate(vector1, vector2) ;       
+    }
+    
+    private double calculate(int[] vectorA, int[] vectorB) {
+        double numerator = 0, denom1 = 0, denom2 = 0;
+        for (int i = 0; i < vectorA.length; i++) {
+            numerator += vectorA[i] * vectorB[i];
+            denom1 += vectorA[i] * vectorA[i];
+            denom2 += vectorB[i] * vectorB[i];
         }
-        double denom1 = 0;
-        for (int elem : vector1) {
-            denom1 += elem * elem;
-        }
-        double denom2 = 0;
-        for (int elem : vector2) {
-            denom2 += elem * elem;
-        }
-
-//        System.out.println(Arrays.toString(uniques.toArray()));
-//        System.out.println(Arrays.toString(vector1));
-//        System.out.println(Arrays.toString(vector2));
 
         return numerator / (Math.sqrt(denom1) * Math.sqrt(denom2));
     }
